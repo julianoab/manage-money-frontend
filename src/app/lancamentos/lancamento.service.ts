@@ -1,8 +1,13 @@
+import { DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-export interface LancamentoFiltro {
-  descricao: string;
+export class LancamentoFiltro {
+  descricao?: string;
+  dataVencimentoInicio?: Date;
+  dataVencimentoFim?: Date;
+  pagina = 0;
+  itensPorPagina: number = 5;
 }
 
 @Injectable({
@@ -10,22 +15,48 @@ export interface LancamentoFiltro {
 })
 export class LancamentoService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private datePipe: DatePipe) { }
 
   lancamentosUrl = '/api/lancamentos';
 
   pesquisar(filtro: LancamentoFiltro): Promise<any> {
-    let params = new HttpParams();
     const headers = new HttpHeaders().append('Authorization', 'Basic YWRtaW46YWRtaW4=');
-   
+    let params = new HttpParams();
+    
+    params = params.set('page', filtro.pagina);
+    params = params.set('size', filtro.itensPorPagina);
+
     if (filtro.descricao) {
       params = params.set('descricao', filtro.descricao);
     } 
-
-    console.log('params', params.get('descricao'));
+    if (filtro.dataVencimentoInicio) {
+      params = params.set('dataVencimentoDe', this.datePipe.transform(filtro.dataVencimentoInicio, 'yyyy-MM-dd')!)
+    }
+    if (filtro.dataVencimentoFim) {
+      params = params.set('dataVencimentoAte', this.datePipe.transform(filtro.dataVencimentoFim, 'yyyy-MM-dd')!)
+    }
 
     return this.http.get(`${this.lancamentosUrl}`, { headers, params }).toPromise()
-      .then((response: any) => response['content']);
+      .then((response: any) => {
+        const responseJson = response;
+        const lancamentos = responseJson.content;
+
+        const resultado = {
+          lancamentos,
+          total: responseJson.totalElements
+        };
+
+        return resultado;
+        
+      });
+  }
+
+  excluir(codigo: Number): Promise<void> {
+    const headers = new HttpHeaders().append('Authorization', 'Basic YWRtaW46YWRtaW4=');
+
+    return this.http.delete(`${this.lancamentosUrl}/${codigo}`, { headers })
+      .toPromise()
+      .then(() => null);
   }
 
 }
