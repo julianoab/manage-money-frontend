@@ -17,11 +17,14 @@ import { SharedModule } from '../shared/shared.module';
 
 import { LancamentoCadastroComponent } from './lancamento-cadastro/lancamento-cadastro.component';
 import { LancamentosPesquisaComponent } from './lancamentos-pesquisa/lancamentos-pesquisa.component';
+import { HttpClientModule } from '@angular/common/http';
+import { LancamentosRoutingModule } from './lancamentos-routing.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
     InputTextModule,
     ButtonModule,
     TabViewModule,
@@ -33,15 +36,13 @@ import { LancamentosPesquisaComponent } from './lancamentos-pesquisa/lancamentos
     DropdownModule,
     InputMaskModule,
     InputNumberModule,
-    SharedModule
+    SharedModule,
+    LancamentosRoutingModule
   ],
   declarations: [
     LancamentoCadastroComponent,
     LancamentosPesquisaComponent,
   ],
-  exports: [
-    LancamentoCadastroComponent,
-    LancamentosPesquisaComponent
-  ]
+  exports: []
 })
 export class LancamentosModule { }

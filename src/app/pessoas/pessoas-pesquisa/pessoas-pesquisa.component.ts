@@ -6,6 +6,7 @@ import { PessoaService } from '../pessoa.service';
   templateUrl: './pessoas-pesquisa.component.html',
   styleUrls: ['./pessoas-pesquisa.component.css']
 })
+
 export class PessoasPesquisaComponent implements OnInit {
   
   pessoas: [];
@@ -13,7 +14,7 @@ export class PessoasPesquisaComponent implements OnInit {
   constructor(private pessoaService: PessoaService) {}  
   
   ngOnInit(): void {
-    this.pessoaService.listar().then(resultado => {
+    this.pessoaService.listarTodas().then(resultado => {
       this.pessoas = resultado;
     })
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { LancamentoFiltro, LancamentoService } from '../lancamento.service';
 import { ConfirmationService, LazyLoadEvent, MessageService } from 'primeng/api';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-lancamentos-pesquisa',
@@ -17,9 +18,12 @@ export class LancamentosPesquisaComponent implements OnInit {
 
   constructor(private lancamentoService: LancamentoService, 
               private messageService: MessageService,
-              private confirmation: ConfirmationService) {}
+              private confirmation: ConfirmationService,
+              private title: Title) {}
   
-  ngOnInit() {}
+  ngOnInit() {
+    this.title.setTitle('Pesquisa de lançamentos');
+  }
 
   pesquisar(pagina = 0): void {
     this.filtro.pagina = pagina;
@@ -56,5 +60,6 @@ export class LancamentosPesquisaComponent implements OnInit {
         this.messageService.add( { severity: 'success', detail: 'Lançamento excluído com sucesso!' } );
     });
   }
+ 
 
 }

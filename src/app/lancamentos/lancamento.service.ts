@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Lancamento } from '../core/model';
 
 export class LancamentoFiltro {
   descricao?: string;
@@ -57,6 +58,34 @@ export class LancamentoService {
     return this.http.delete(`${this.lancamentosUrl}/${codigo}`, { headers })
       .toPromise()
       .then(() => null);
+  }
+
+  atualizar(lancamento: Lancamento): Promise<any> {
+    const headers = new HttpHeaders().append('Authorization', 'Basic YWRtaW46YWRtaW4=')
+                                     .append('Content-Type', 'application/json');
+
+    return this.http.put(this.lancamentosUrl, JSON.stringify(lancamento), { headers }).toPromise();
+  }
+
+  buscarPorCodigo(codigo: Number): Promise<any> {
+    const headers = new HttpHeaders().append('Authorization', 'Basic YWRtaW46YWRtaW4=');
+    
+    return this.http.get(`${this.lancamentosUrl}/${codigo}`, { headers }).toPromise().then((response: any) => {
+      this.converterStringsParaDatas([response]);
+      return response;
+    }) 
+  }
+
+  private converterStringsParaDatas(lancamentos: Lancamento[]) {
+    for (const lancamento of lancamentos) {
+      let offSet = new Date().getTimezoneOffset() * 60000;
+      lancamento.dataVencimento = new Date(new Date(lancamento.dataVencimento).getTime() + offSet);
+
+      if (lancamento.dataPagamento) {
+        lancamento.dataPagamento = new Date(new Date(lancamento.dataPagamento).getTime() + offSet);
+      }
+    }
+
   }
 
 }
