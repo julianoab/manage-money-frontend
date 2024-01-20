@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 export class LoginComponent {
 
-  login(usuario: string, senha:string) {
+  login(email: string, senha:string) {
 
   }
 
